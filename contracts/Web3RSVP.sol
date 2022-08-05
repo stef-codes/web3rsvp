@@ -34,5 +34,9 @@ contract Web3RSVP {
                 maxCapacity
             )
         );
+
+        address[] memory confirmedRSVPS; 
+        address[] memory claimedRSVPS; 
+        
     }
 }
