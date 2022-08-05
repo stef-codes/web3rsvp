@@ -50,6 +50,18 @@ contract Web3RSVP {
             claimedRSVPS, 
             false
         );
-
     }
+
+    function createNewRSVP(bytes32 eventId) external payable {
+        //lookup event from mapping
+        Create storage myEvent = idToEvent[eventId]; 
+
+        //transfer deposit to contract/ require enough ETH to cover the deposit requirement for event
+        require(msg.value == myEvent.deposit, "Not Enough");
+
+        //require event happened 
+        require(block.timestamp);
+    }
+
+    
 }
