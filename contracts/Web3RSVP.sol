@@ -37,6 +37,19 @@ contract Web3RSVP {
 
         address[] memory confirmedRSVPS; 
         address[] memory claimedRSVPS; 
-        
+
+        // Create new CreateEvent struct and add it to idToEvent mapping
+        idToEvent[eventId] = CreateEvent(
+            eventId,
+            eventDataCID, 
+            msg.sender,
+            eventTimestamp, 
+            deposit, 
+            maxCapacity, 
+            confirmedRSVPS, 
+            claimedRSVPS, 
+            false
+        );
+
     }
 }
