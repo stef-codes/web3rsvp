@@ -19,7 +19,7 @@ contract Web3RSVP {
 
     event DepositsPaidOut(bytes32 eventID); 
 
-    
+
 
     struct CreateEvent{
         bytes32 eventId;
@@ -67,6 +67,15 @@ contract Web3RSVP {
             claimedRSVPs, 
             false
         );
+
+        emit NewEventCreated(
+            eventID, 
+            msg.sender, 
+            eventTimestamp, 
+            maxCapacity, 
+            deposit, 
+            eventDataCID
+        );
     }
 
     function createNewRSVP(bytes32 eventId) external payable {
@@ -89,6 +98,8 @@ contract Web3RSVP {
         for (uint8 i = 0; i < myEvent.claimedRSVPs.length; i++) {
             require(myEvent.claimedRSVPs[i] != attendee, "ALREADY CONFIRMED");
         }
+
+        emit NewRSVP(eventId, msg.sender);
     }
 
     function confirmAttendee(bytes32 eventId, address attendee) public {
@@ -129,6 +140,8 @@ contract Web3RSVP {
         }
 
         require(sent, "Failed to send Ether"); 
+
+        emit ConfirmedAttendee(eventId, attendee);
     }
 
 
@@ -179,5 +192,7 @@ contract Web3RSVP {
         }
 
         require(sent, "Failed to send Ether");
+
+        emit DepositsPaidOut(eventID);
     }
 }
