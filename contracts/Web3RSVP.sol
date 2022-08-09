@@ -35,8 +35,8 @@ contract Web3RSVP {
             )
         );
 
-        address[] memory confirmedRSVPS; 
-        address[] memory claimedRSVPS; 
+        address[] memory confirmedRSVPs; 
+        address[] memory claimedRSVPs; 
 
         // Create new CreateEvent struct and add it to idToEvent mapping
         idToEvent[eventId] = CreateEvent(
@@ -46,8 +46,8 @@ contract Web3RSVP {
             eventTimestamp, 
             deposit, 
             maxCapacity, 
-            confirmedRSVPS, 
-            claimedRSVPS, 
+            confirmedRSVPs, 
+            claimedRSVPs, 
             false
         );
     }
@@ -59,9 +59,35 @@ contract Web3RSVP {
         //transfer deposit to contract/ require enough ETH to cover the deposit requirement for event
         require(msg.value == myEvent.deposit, "Not Enough");
 
-        //require event happened 
-        require(block.timestamp);
-    }
+        //require that the event hasn't already happened (<eventTimestamp)
+        require(block.timestamp <= myEvent.eventTimestamp, "ALREADY HAPPENED" );
 
+        // make sure event is under max capacity
+        require(
+            myEvent.confirmedRSVPs.length < myEvent.maxCapacity, 
+            "This event has reached capacity" 
+        ); 
+
+        // require that msg.sender isn't already in myEvent.confirmedRSVPs AKA hasn't already RSVP'd
+        for (uint8 i = 0; i < myEvent.claimedRSVPs.length; i++) {
+            require(myEvent.claimedRSVPs[i] != attendee, "ALREADY CONFIRMED");
+        }
+
+
+        // // require that deposits are not already claimed by the event owner
+        // require(myEvent.paidOut == false, "ALREADY PAID OUT"); 
+
+        // //add the attendee to the claimedRSVPs list
+        // myEvent.claimedRSVPs.push(attendee); 
+
+        // // sending eth back to the staker `https://solidity-by-example.org/sending-ether`
+        // (bool sent,) = attendee.call{value: myEvent.deposit}(""); 
+
+        // // if this fails, remove this user from the array of claimed RSVPs
+        // if (!sent) {
+        //     myEvent.claimedRSVPs.pop();
+        // }
+
+        // require(sent, "Failed to send Ether"); 
     
 }
