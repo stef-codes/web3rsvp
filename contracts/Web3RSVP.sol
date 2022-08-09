@@ -72,22 +72,63 @@ contract Web3RSVP {
         for (uint8 i = 0; i < myEvent.claimedRSVPs.length; i++) {
             require(myEvent.claimedRSVPs[i] != attendee, "ALREADY CONFIRMED");
         }
+    }
+
+    function confirmAttendee(bytes32 eventId, address attendee) public {
+        // look up event from struct using the eventId
+        CreateEvent storage myEvent = idToEvent[eventId];
+
+        // require that msg.sender is the owner of the event - only the host should be able to check in people
+        require(msg.sender == myEvent.eventOwner, "NOT AUTHORIZED");
+        
+        // require that attendee trying to check in actually RSVP'd
+        address rsvpConfirm; 
+
+        for (uint8 i =0; i < myEvent.confirmedRSVPs.length; i = 0) {
+            if(myEvent.confirmedRSVPs[i] == attendee){
+                rsvpConfirm = myEvent.confirmedRSVPs[i]; 
+            }
+        }
+
+        require(rsvpConfirm == attendee, "NO RSVP TO CONFIRM"); 
+
+        // require that attendee is NOT already in the claimedRSVPs list AKA make sure they haven't checked in
+        for (uint8 i = 0; i < myEvent.claimedRSVPs.length; i++) {
+            require(myEvent.claimedRSVPs[i] != attendee, "ALREADY CLAIMED");
+        }
+
+        // require that deposits are not already claimed by the event owner
+        require(myEvent.paidOut == false, "ALREADY PAID OUT"); 
+
+        //add the attendee to the claimedRSVPs list
+        myEvent.claimedRSVPs.push(attendee); 
+
+        // sending eth back to the staker `https://solidity-by-example.org/sending-ether`
+        (bool sent,) = attendee.call{value: myEvent.deposit}(""); 
+
+        // if this fails, remove this user from the array of claimed RSVPs
+        if (!sent) {
+            myEvent.claimedRSVPs.pop();
+        }
+
+        require(sent, "Failed to send Ether"); 
+    }
 
 
-        // // require that deposits are not already claimed by the event owner
-        // require(myEvent.paidOut == false, "ALREADY PAID OUT"); 
+    function confirmAllAttendees(bytes32 eventId) external {
+        // look up event from our struct with with the eventId
+        CreateEvent memory myEvent = idtoEvent[eventId]; 
 
-        // //add the attendee to the claimedRSVPs list
-        // myEvent.claimedRSVPs.push(attendee); 
+        // make sure you require that msg.sender is the owner of the event 
+        require(msg.sender == myEvent.eventOwner, "NOT AUTHORIZED"); 
 
-        // // sending eth back to the staker `https://solidity-by-example.org/sending-ether`
-        // (bool sent,) = attendee.call{value: myEvent.deposit}(""); 
+        // confirm each attendee in the rsvp array 
+        for (uint8 i = 0; i < myEvent.confirmedRSVPs.length; i++) {
+            confirmAttendee(eventId, myEvent.confirmedRSVP[i]); 
+        }
+    }
 
-        // // if this fails, remove this user from the array of claimed RSVPs
-        // if (!sent) {
-        //     myEvent.claimedRSVPs.pop();
-        // }
-
-        // require(sent, "Failed to send Ether"); 
     
+
+
 }
