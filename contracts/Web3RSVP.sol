@@ -113,7 +113,7 @@ contract Web3RSVP {
 
         // confirm each attendee in the rsvp array 
         for (uint8 i = 0; i < myEvent.confirmedRSVPs.length; i++) {
-            confirmAttendee(eventId, myEvent.confirmedRSVP[i]); 
+            confirmAttendee(eventId, myEvent.confirmedRSVPs[i]); 
         }
     }
 
