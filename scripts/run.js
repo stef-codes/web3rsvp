@@ -17,7 +17,8 @@ const main = async () => {
   let eventDataCID =
     "bafybeibhwfzx6oo5rymsxmkdxpmkfwyvbjrrwcl7cekmbzlupmp5ypkyfi";
 }; 
-  
+
+  // send deposit and call contract function from another wallet and call 
   let txn = await rsvpContract.createNewEvent(
     timestamp, 
     deposit, 
@@ -31,8 +32,41 @@ const main = async () => {
   let eventID = wait.events[0].args.eventID; 
   console.log("EVENT ID:", eventID)
 
-  //
+  // Call contract function from deployer wallet addresses
+  txn = await rsvpContract.createNewRSVP(eventID, { value: deposit}); 
+  wait = await txn.wait(); 
+  console.log("NEW RSVP:", wait.events[0].event, wait.events[0].args); 
 
+  txn = await rsvpContract
+    .connect(address1)
+    .createNewRSVP(eventID, { value: deposit}); 
+  wait = await.txn.wait(); 
+  console.log("NEW RSVP:", wait.events[0].event, wait.events[0].args); 
+
+  txn = await rsvpContract
+    .connect(address2)
+    .createNewRSVP(eventID, {value: deposit}); 
+  wait = await txn.wait(); 
+
+  console.log("NEW RSVP:", wait.events[0].event, wait.events[0].args)
+
+
+  // confirm all RSVPs with `confirmAllAttendees' 
+  txn = await rsvpContract.confirmAllAttendees(eventID); 
+  wait = await txn.wait(); 
+  wait.events.forEach((event) =>
+    console.log("CONFIRMED:", event.args.attendeeAddress)
+  );
+
+  //wait 10 years
+  await.hre.network.provider.send("evm_increaseTime", [15778800000000]); 
+
+  txn = await rsvpContract.withdrawUnclaimedDeposits(eventID); 
+  wait = await txn.wait(); 
+  console.log("WITHDRAWN:", wait.events[0].event, wait.events[0].args); 
+
+  // test script
+  
 
 
 const runMain = async () => {
