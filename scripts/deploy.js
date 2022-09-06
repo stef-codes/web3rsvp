@@ -17,3 +17,4 @@ const runMain = async () => {
     }
 }; 
 
+runMain(); 
