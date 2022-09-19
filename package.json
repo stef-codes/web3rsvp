@@ -1,16 +1,16 @@
 {
   "name": "hardhat-sample",
   "version": "1.0.0",
-  "description": "",
+  "description": "This application enables RSVPs with Web3 technology and authentication with your wallet. It is similar to ticketmaster in the web2 space.",
   "main": "index.js",
   "scripts": {
     "deploy": "npx hardhat run scripts/deploy.js --network mumbai",
     "test": "npx hardhat test --trace",
-    "script": "node scripts/run.js", 
+    "script": "node scripts/run.js",
     "compile": "npx hardhat compile"
   },
   "keywords": [],
-  "author": "",
+  "author": "Stefanie",
   "license": "ISC",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",
@@ -22,5 +22,16 @@
   },
   "dependencies": {
     "dotenv": "^16.0.2"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stef-codes/web3rsvp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stef-codes/web3rsvp/issues"
+  },
+  "homepage": "https://github.com/stef-codes/web3rsvp#readme"
 }
