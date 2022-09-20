@@ -21,6 +21,7 @@
     "hardhat": "^2.11.2"
   },
   "dependencies": {
+    "better-npm-audit": "^3.7.3",
     "dotenv": "^16.0.2"
   },
   "directories": {
